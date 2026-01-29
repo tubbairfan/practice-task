@@ -62,10 +62,10 @@ export default function App() {
         position="top-right"
         autoClose={1000}
         hideProgressBar={false}
+        pauseOnHover={false}
         closeOnClick
-        pauseOnHover
         draggable
-        theme="light"
+        theme="dark"
       />
         <RouterProvider router={router} />
       </QueryClientProvider>

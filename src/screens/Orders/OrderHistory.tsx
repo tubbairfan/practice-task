@@ -6,9 +6,8 @@ export function OrderHistory() {
   const { orders, getOrderByNumber, removeOrder, formatOrderDate } = useOrder();
   const [selectedOrder, setSelectedOrder] = useState("");
 
-
   const currentOrder = selectedOrder ? getOrderByNumber(selectedOrder) : null;
-  
+
   if (orders.length === 0) {
     return (
       <div className="p-5 text-center">
@@ -131,26 +130,41 @@ export function OrderHistory() {
               {/* Delete Button */}
               <button
                 onClick={() => {
+                  toast.dismiss();
+
                   toast.warn(
                     ({ closeToast }) => (
-                      <div>
-                        <p>Are you sure?</p>
-                        <div style={{ marginTop: "10px" }}>
+                      <div className="p-3">
+                        <div className="font-semibold text-sm text-white">
+                          Are you sure you want to delete this order?
+                        </div>
+
+                        <div className="flex justify-end gap-3 mt-3">
                           <button
                             onClick={() => {
                               removeOrder(currentOrder.orderNumber);
                               setSelectedOrder("");
                               closeToast();
                             }}
-                            style={{ marginRight: "10px" }}
+                            className="px-3 py-1 text-sm bg-red-500 text-white rounded hover:bg-red-600"
                           >
                             Yes
                           </button>
-                          <button onClick={closeToast}>No</button>
+
+                          <button
+                            onClick={closeToast}
+                            className="px-3 py-1 text-sm bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                          >
+                            No
+                          </button>
                         </div>
                       </div>
                     ),
-                    { autoClose: false, closeOnClick: false  }
+                    {
+                      autoClose: false,
+                      closeOnClick: false,
+                      draggable: false,
+                    }
                   );
                 }}
                 className="w-full mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
@@ -158,7 +172,7 @@ export function OrderHistory() {
                 Delete Order
               </button>
 
-            
+
             </div>
           ) : (
             <div className="bg-gray-50 border border-gray-300 p-6 rounded-lg text-center">
