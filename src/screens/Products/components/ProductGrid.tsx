@@ -1,20 +1,32 @@
+import { useState } from "react";
 import type { Product } from "../Productsdata";
 
 interface ProductGridProps {
   products: Product[] | undefined;
-  onAddToCart: (product: Product) => void;
-  onView: (id: number) => void;
-  onEdit: (product: Product) => void;
-  onDelete: (id: number) => void;
+  onAddToCart: (product: Product, quantity: number) => void;
 }
 
 export function ProductGrid({
   products,
   onAddToCart,
-  onView,
-  onEdit,
-  onDelete,
 }: ProductGridProps) {
+  const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
+
+  const getQuantity = (productId: number) => quantities[productId] || 1;
+
+  const handleAddToCart = (product: Product) => {
+    const quantity = getQuantity(product.id);
+    onAddToCart(product, quantity);
+    setQuantities({ ...quantities, [product.id]: 1 });
+  };
+
+  const handleQuantityChange = (productId: number, newQuantity: number) => {
+    setQuantities({
+      ...quantities,
+      [productId]: Math.max(1, newQuantity),
+    });
+  };
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
       {products?.map((product) => (
@@ -24,9 +36,8 @@ export function ProductGrid({
         >
           <img
             src={product.image}
-            className="h-30 w-full object-contain mb-3 cursor-pointer"
+            className="h-30 w-full object-contain mb-3"
             alt={product.title}
-            onClick={() => onView(product.id)}
           />
 
           <h4 className="text-sm font-medium line-clamp-2 mb-1">
@@ -37,30 +48,33 @@ export function ProductGrid({
 
           <small className="text-gray-500">⭐ {product.rating.rate}</small>
 
-          <div className="flex gap-2 mt-3">
+          <div className="flex items-center gap-2 mt-3">
             <button
-              onClick={() => onAddToCart(product)}
+              onClick={() =>
+                handleQuantityChange(product.id, getQuantity(product.id) - 1)
+              }
+              className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 transition text-sm"
+              title="Decrease quantity"
+            >
+              −
+            </button>
+            <span className="w-6 text-center font-semibold text-sm">
+              {getQuantity(product.id)}
+            </span>
+            <button
+              onClick={() =>
+                handleQuantityChange(product.id, getQuantity(product.id) + 1)
+              }
+              className="px-2 py-1 bg-gray-200 rounded hover:bg-gray-300 transition text-sm"
+              title="Increase quantity"
+            >
+              +
+            </button>
+            <button
+              onClick={() => handleAddToCart(product)}
               className="flex-1 bg-blue-500 text-white py-1 text-sm rounded hover:bg-blue-600 transition"
             >
-              Cart
-            </button>
-            <button
-              onClick={() => onView(product.id)}
-              className="flex-1 bg-gray-500 text-white py-1 text-sm rounded hover:bg-gray-600 transition"
-            >
-              View
-            </button>
-            <button
-              onClick={() => onEdit(product)}
-              className="flex-1 bg-yellow-500 text-white py-1 text-sm rounded hover:bg-yellow-600 transition"
-            >
-              Edit
-            </button>
-            <button
-              onClick={() => onDelete(product.id)}
-              className="flex-1 bg-red-500 text-white py-1 text-sm rounded hover:bg-red-600 transition"
-            >
-              Delete
+              Add
             </button>
           </div>
         </div>

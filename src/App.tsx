@@ -1,4 +1,4 @@
-import { createRootRoute, createRoute, createRouter, RouterProvider,Outlet } from '@tanstack/react-router'
+import { createRootRoute, createRoute, createRouter, RouterProvider,Outlet,Link } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { Provider } from 'react-redux'
 import { store } from './redux/store'
@@ -18,9 +18,9 @@ function Layout() {
       <nav className="bg-black text-white p-4 flex justify-between items-center">
         <h1 className="text-xl font-bold">FakeStore</h1>
         <div className="space-x-4">
-          <a href="/" className="hover:underline">Products</a>
-          <a href="/cart" className="hover:underline">Cart</a>
-          <a href="/orders" className="hover:underline">Orders</a>
+          <Link to="/" className="hover:underline">Products</Link>
+          <Link to="/cart" className="hover:underline">Cart</Link>
+          <Link to="/orders" className="hover:underline">Orders</Link>
         </div>
       </nav>
       <div>
