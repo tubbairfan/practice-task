@@ -1,15 +1,14 @@
 import { useState } from "react";
 import { useOrder } from "../../hooks/useOrder";
 import { Link } from "@tanstack/react-router";
-
+import { toast } from 'react-toastify';
 export function OrderHistory() {
   const { orders, getOrderByNumber, removeOrder, formatOrderDate } = useOrder();
   const [selectedOrder, setSelectedOrder] = useState("");
 
-  
+
   const currentOrder = selectedOrder ? getOrderByNumber(selectedOrder) : null;
-
-
+  
   if (orders.length === 0) {
     return (
       <div className="p-5 text-center">
@@ -31,18 +30,17 @@ export function OrderHistory() {
       <h1 className="text-3xl font-bold mb-6">📋 Order History</h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-   
+
         <div className="lg:col-span-2">
           <div className="space-y-3">
             {orders.map((order) => (
               <div
                 key={order.orderNumber}
                 onClick={() => setSelectedOrder(order.orderNumber)}
-                className={`border-2 p-4 rounded-lg cursor-pointer transition ${
-                  selectedOrder === order.orderNumber
-                    ? "border-blue-500 bg-blue-50"
-                    : "border-gray-300 hover:border-gray-400 hover:shadow-md"
-                }`}
+                className={`border-2 p-4 rounded-lg cursor-pointer transition ${selectedOrder === order.orderNumber
+                  ? "border-blue-500 bg-blue-50"
+                  : "border-gray-300 hover:border-gray-400 hover:shadow-md"
+                  }`}
               >
                 <div className="flex justify-between items-start mb-3">
                   <div>
@@ -73,7 +71,7 @@ export function OrderHistory() {
           </div>
         </div>
 
-     
+
         <div className="lg:col-span-1">
           {currentOrder ? (
             <div className="bg-gray-50 border border-gray-300 p-6 rounded-lg sticky top-20">
@@ -91,7 +89,7 @@ export function OrderHistory() {
                 </div>
               </div>
 
-        
+
               <div className="mb-6 border-t pt-4">
                 <h3 className="font-bold mb-3">Items ({currentOrder.items.length})</h3>
                 <div className="space-y-2 max-h-48 overflow-y-auto">
@@ -119,7 +117,7 @@ export function OrderHistory() {
                   <span>Subtotal:</span>
                   <span>${currentOrder.subtotal.toFixed(2)}</span>
                 </div>
-               
+
                 <div className="flex justify-between text-sm">
                   <span>Tax:</span>
                   <span>${currentOrder.tax.toFixed(2)}</span>
@@ -130,17 +128,37 @@ export function OrderHistory() {
                 </div>
               </div>
 
+              {/* Delete Button */}
               <button
                 onClick={() => {
-                  if (window.confirm("Are you sure you want to delete this order?")) {
-                    removeOrder(currentOrder.orderNumber);
-                    setSelectedOrder("");
-                  }
+                  toast.warn(
+                    ({ closeToast }) => (
+                      <div>
+                        <p>Are you sure?</p>
+                        <div style={{ marginTop: "10px" }}>
+                          <button
+                            onClick={() => {
+                              removeOrder(currentOrder.orderNumber);
+                              setSelectedOrder("");
+                              closeToast();
+                            }}
+                            style={{ marginRight: "10px" }}
+                          >
+                            Yes
+                          </button>
+                          <button onClick={closeToast}>No</button>
+                        </div>
+                      </div>
+                    ),
+                    { autoClose: false, closeOnClick: false  }
+                  );
                 }}
                 className="w-full mt-4 px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 transition"
               >
                 Delete Order
               </button>
+
+            
             </div>
           ) : (
             <div className="bg-gray-50 border border-gray-300 p-6 rounded-lg text-center">

@@ -5,7 +5,7 @@ import { store } from './redux/store'
 import { Products } from './screens/Products/Productsdata'
 import { CartDisplay } from './screens/Carts/CartDisplay'
 import { OrderHistory } from './screens/Orders/OrderHistory'
-
+import { ToastContainer } from "react-toastify";
 const queryClient = new QueryClient()
 const rootRoute = createRootRoute({
   component: Layout,
@@ -29,6 +29,7 @@ function Layout() {
   )
 }
 
+
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
@@ -47,13 +48,25 @@ const ordersRoute = createRoute({
   component: OrderHistory,
 })
 
+
 const routeTree = rootRoute.addChildren([indexRoute, cartRoute, ordersRoute])
 const router = createRouter({ routeTree })
 
+
 export default function App() {
   return (
+    
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
+         <ToastContainer
+        position="top-right"
+        autoClose={1000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="light"
+      />
         <RouterProvider router={router} />
       </QueryClientProvider>
     </Provider>

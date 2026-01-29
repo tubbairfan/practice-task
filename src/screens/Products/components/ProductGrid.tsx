@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Product } from "../Productsdata";
-
+import { toast } from "react-toastify";
 interface ProductGridProps {
   products: Product[] | undefined;
   onAddToCart: (product: Product, quantity: number) => void;
@@ -71,7 +71,11 @@ export function ProductGrid({
               +
             </button>
             <button
-              onClick={() => handleAddToCart(product)}
+              onClick={() => {
+                handleAddToCart(product);
+                toast.dismiss();
+                toast.success(` Added to cart!`);
+              }}
               className="flex-1 bg-blue-500 text-white py-1 text-sm rounded hover:bg-blue-600 transition"
             >
               Add
