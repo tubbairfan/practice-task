@@ -21,11 +21,10 @@ export function CartDisplay() {
   const shipping = cartTotal > 100 ? 0 : 10;
   const finalTotal = cartTotal + tax + shipping;
   const totalItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-
-
+  
   const handlePlaceOrder = () => {
 
-    const order = createNewOrder(cartItems, cartTotal, tax, shipping);
+    const order = createNewOrder(cartItems, cartTotal, tax);
     setCurrentOrder(order.orderNumber);
     setShowCheckoutModal(false);
     setShowOrderConfirmation(true);
@@ -65,7 +64,6 @@ export function CartDisplay() {
           <OrderSummary
             cartTotal={cartTotal}
             tax={tax}
-            shipping={shipping}
             finalTotal={finalTotal}
             onCheckout={() => setShowCheckoutModal(true)}
           />
@@ -77,7 +75,6 @@ export function CartDisplay() {
         cartItems={cartItems}
         cartTotal={cartTotal}
         tax={tax}
-        shipping={shipping}
         finalTotal={finalTotal}
         onClose={() => setShowCheckoutModal(false)}
         onPlaceOrder={handlePlaceOrder}

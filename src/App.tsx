@@ -7,7 +7,6 @@ import { CartDisplay } from './screens/Carts/CartDisplay'
 import { OrderHistory } from './screens/Orders/OrderHistory'
 
 const queryClient = new QueryClient()
-
 const rootRoute = createRootRoute({
   component: Layout,
 })

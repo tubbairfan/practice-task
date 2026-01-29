@@ -4,7 +4,7 @@ interface CheckoutModalProps {
   cartItems: any[];
   cartTotal: number;
   tax: number;
-  shipping: number;
+ 
   finalTotal: number;
   onClose: () => void;
   onPlaceOrder: () => void;
@@ -15,7 +15,7 @@ export function CheckoutModal({
   cartItems,
   cartTotal,
   tax,
-  shipping,
+  
   finalTotal,
   onClose,
   onPlaceOrder,
@@ -43,10 +43,7 @@ export function CheckoutModal({
             <span>Subtotal:</span>
             <span>${cartTotal.toFixed(2)}</span>
           </div>
-          <div className="flex justify-between">
-            <span>Shipping:</span>
-            <span>${shipping.toFixed(2)}</span>
-          </div>
+         
           <div className="flex justify-between">
             <span>Tax (10%):</span>
             <span>${tax.toFixed(2)}</span>

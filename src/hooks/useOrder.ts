@@ -2,7 +2,6 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   createOrder,
   setCurrentOrder,
-  updateOrderStatus,
   deleteOrder,
   clearAllOrders,
   clearCurrentOrder,
@@ -16,9 +15,8 @@ export function useOrder() {
   const orders = useSelector((state: RootState) => state.order.orders);
   const currentOrder = useSelector((state: RootState) => state.order.currentOrder);
 
-  // Create new order
-  const createNewOrder = (items: OrderItem[], subtotal: number, tax: number, shipping: number) => {
-    const total = subtotal + tax + shipping;
+  const createNewOrder = (items: OrderItem[], subtotal: number, tax: number) => {
+    const total = subtotal + tax ;
     const orderNumber = `ORD-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
     
     const newOrder: Order = {
@@ -26,22 +24,16 @@ export function useOrder() {
       items,
       subtotal,
       tax,
-      shipping,
       total,
       createdAt: new Date().toISOString(),
-      status: 'pending',
     };
 
     dispatch(createOrder(newOrder));
     return newOrder;
   };
-
-  // Get all orders
   const getAllOrders = () => {
     return orders;
   };
-
-  // Get order by number
   const getOrderByNumber = (orderNumber: string) => {
     const order = orders.find(o => o.orderNumber === orderNumber);
     if (order) {
@@ -50,39 +42,19 @@ export function useOrder() {
     return order;
   };
 
-  // Update order status
-  const updateStatus = (orderNumber: string, status: Order['status']) => {
-    dispatch(updateOrderStatus({ orderNumber, status }));
-  };
-
-  // Delete order
   const removeOrder = (orderNumber: string) => {
     dispatch(deleteOrder(orderNumber));
   };
 
-  // Clear all orders
   const clearOrders = () => {
     dispatch(clearAllOrders());
   };
 
-  // Clear current order
+
   const clearCurrent = () => {
     dispatch(clearCurrentOrder());
   };
 
-  // Get order statistics
-  const getOrderStats = () => {
-    return {
-      totalOrders: orders.length,
-      totalSpent: orders.reduce((sum, order) => sum + order.total, 0),
-      pendingOrders: orders.filter(o => o.status === 'pending').length,
-      completedOrders: orders.filter(o => o.status === 'completed').length,
-      shippedOrders: orders.filter(o => o.status === 'shipped').length,
-      deliveredOrders: orders.filter(o => o.status === 'delivered').length,
-    };
-  };
-
-  // Format order date
   const formatOrderDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -94,21 +66,14 @@ export function useOrder() {
   };
 
   return {
-    // State
     orders,
     currentOrder,
-
-    // Actions
     createNewOrder,
     getAllOrders,
     getOrderByNumber,
-    updateStatus,
     removeOrder,
     clearOrders,
     clearCurrent,
-
-    // Utilities
-    getOrderStats,
     formatOrderDate,
   };
 }

@@ -1,9 +1,7 @@
 import { Link } from "@tanstack/react-router";
-
 interface OrderSummaryProps {
   cartTotal: number;
   tax: number;
-  shipping: number;
   finalTotal: number;
   onCheckout: () => void;
 }
@@ -11,7 +9,6 @@ interface OrderSummaryProps {
 export function OrderSummary({
   cartTotal,
   tax,
-  shipping,
   finalTotal,
   onCheckout,
 }: OrderSummaryProps) {
@@ -24,10 +21,7 @@ export function OrderSummary({
           <span className="text-gray-600">Subtotal:</span>
           <span className="font-semibold">${cartTotal.toFixed(2)}</span>
         </div>
-        <div className="flex justify-between">
-          <span className="text-gray-600">Shipping:</span>
-          <span className="font-semibold">${shipping.toFixed(2)}</span>
-        </div>
+        
         <div className="flex justify-between">
           <span className="text-gray-600">Tax (10%):</span>
           <span className="font-semibold">${tax.toFixed(2)}</span>

@@ -3,45 +3,12 @@ import { useOrder } from "../../hooks/useOrder";
 import { Link } from "@tanstack/react-router";
 
 export function OrderHistory() {
-  const { orders, getOrderByNumber, updateStatus, removeOrder, formatOrderDate, getOrderStats } = useOrder();
+  const { orders, getOrderByNumber, removeOrder, formatOrderDate } = useOrder();
   const [selectedOrder, setSelectedOrder] = useState("");
-  const [filter, setFilter] = useState<"all" | "pending" | "completed" | "shipped" | "delivered">("all");
 
-  const stats = getOrderStats();
-  const filteredOrders = filter === "all" 
-    ? orders 
-    : orders.filter(order => order.status === filter);
+  
   const currentOrder = selectedOrder ? getOrderByNumber(selectedOrder) : null;
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "pending":
-        return "bg-yellow-100 text-yellow-800 border-yellow-300";
-      case "completed":
-        return "bg-blue-100 text-blue-800 border-blue-300";
-      case "shipped":
-        return "bg-purple-100 text-purple-800 border-purple-300";
-      case "delivered":
-        return "bg-green-100 text-green-800 border-green-300";
-      default:
-        return "bg-gray-100 text-gray-800 border-gray-300";
-    }
-  };
 
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "pending":
-        return "⏳ Pending";
-      case "completed":
-        return "✓ Completed";
-      case "shipped":
-        return "📦 Shipped";
-      case "delivered":
-        return "🎉 Delivered";
-      default:
-        return status;
-    }
-  };
 
   if (orders.length === 0) {
     return (
@@ -63,51 +30,11 @@ export function OrderHistory() {
 
       <h1 className="text-3xl font-bold mb-6">📋 Order History</h1>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 mb-8">
-        <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-lg border border-blue-200">
-          <p className="text-gray-600 text-sm">Total Orders</p>
-          <p className="text-3xl font-bold text-blue-600">{stats.totalOrders}</p>
-        </div>
-        <div className="bg-gradient-to-br from-yellow-50 to-yellow-100 p-4 rounded-lg border border-yellow-200">
-          <p className="text-gray-600 text-sm">Pending</p>
-          <p className="text-3xl font-bold text-yellow-600">{stats.pendingOrders}</p>
-        </div>
-        <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-lg border border-purple-200">
-          <p className="text-gray-600 text-sm">Shipped</p>
-          <p className="text-3xl font-bold text-purple-600">{stats.shippedOrders}</p>
-        </div>
-        <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
-          <p className="text-gray-600 text-sm">Delivered</p>
-          <p className="text-3xl font-bold text-green-600">{stats.deliveredOrders}</p>
-        </div>
-        {/* <div className="bg-gradient-to-br from-pink-50 to-pink-100 p-4 rounded-lg border border-pink-200">
-          <p className="text-gray-600 text-sm">Total Spent</p>
-          <p className="text-2xl font-bold text-pink-600">${stats.totalSpent.toFixed(2)}</p>
-        </div> */}
-      </div>
-
-     
-      <div className="flex gap-2 mb-6 flex-wrap">
-        {["all", "pending", "completed", "shipped", "delivered"].map((status) => (
-          <button
-            key={status}
-            onClick={() => setFilter(status as any)}
-            className={`px-4 py-2 rounded-lg font-semibold transition ${
-              filter === status
-                ? "bg-blue-500 text-white"
-                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
-            }`}
-          >
-            {status.charAt(0).toUpperCase() + status.slice(1)}
-          </button>
-        ))}
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
    
         <div className="lg:col-span-2">
           <div className="space-y-3">
-            {filteredOrders.map((order) => (
+            {orders.map((order) => (
               <div
                 key={order.orderNumber}
                 onClick={() => setSelectedOrder(order.orderNumber)}
@@ -124,9 +51,6 @@ export function OrderHistory() {
                       {formatOrderDate(order.createdAt)}
                     </p>
                   </div>
-                  <span className={`px-3 py-1 rounded-full text-sm font-semibold border ${getStatusColor(order.status)}`}>
-                    {getStatusBadge(order.status)}
-                  </span>
                 </div>
 
                 <div className="flex justify-between items-center">
@@ -165,25 +89,6 @@ export function OrderHistory() {
                   <p className="text-sm text-gray-600">Order Date</p>
                   <p className="font-semibold">{formatOrderDate(currentOrder.createdAt)}</p>
                 </div>
-
-                <div>
-                  <p className="text-sm text-gray-600">Status</p>
-                  <div className="flex gap-2 mt-1">
-                    {["pending", "completed", "shipped", "delivered"].map((s) => (
-                      <button
-                        key={s}
-                        onClick={() => updateStatus(currentOrder.orderNumber, s as any)}
-                        className={`px-2 py-1 text-xs rounded font-semibold transition ${
-                          currentOrder.status === s
-                            ? `${getStatusColor(s)} cursor-default`
-                            : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100 cursor-pointer"
-                        }`}
-                      >
-                        {getStatusBadge(s).split(" ")[1]}
-                      </button>
-                    ))}
-                  </div>
-                </div>
               </div>
 
         
@@ -214,10 +119,7 @@ export function OrderHistory() {
                   <span>Subtotal:</span>
                   <span>${currentOrder.subtotal.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-sm">
-                  <span>Shipping:</span>
-                  <span>${currentOrder.shipping.toFixed(2)}</span>
-                </div>
+               
                 <div className="flex justify-between text-sm">
                   <span>Tax:</span>
                   <span>${currentOrder.tax.toFixed(2)}</span>
@@ -228,7 +130,6 @@ export function OrderHistory() {
                 </div>
               </div>
 
-              {/* Delete Button */}
               <button
                 onClick={() => {
                   if (window.confirm("Are you sure you want to delete this order?")) {

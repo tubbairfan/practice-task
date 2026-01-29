@@ -33,12 +33,9 @@ export function useProducts() {
   };
 
   return {
-    // Queries
     products,
     isLoading,
     error,
-
-    // Handlers
     handleAddToCart,
   };
 }
